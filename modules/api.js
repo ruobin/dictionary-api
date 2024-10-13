@@ -43,7 +43,8 @@ const getAudio = async (word) => {
             body: JSON.stringify({
                 model: "tts-1",
                 input: word,
-                voice: "alloy"
+                voice: "alloy",
+                response_format: "opus"
             })
         });
 
