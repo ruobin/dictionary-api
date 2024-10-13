@@ -8,7 +8,7 @@ app.use(express.json());
 
 const cors = require('cors');
 
-const port = 3002;
+const port = process.env.PORT;
 
 const recordSchema = new mongoose.Schema({
     word: String, // Use appropriate fields and types for your data
@@ -52,6 +52,24 @@ app.post('/api/translate', cors(), async (req, res) => {
     }
 
 });
+
+app.post('/api/getaudio', cors(), async (req, res) => {
+    const word = req.body.word;
+    if (!word) {
+        return res.status(400).json({ error: 'Word is required' });
+    }
+
+    try {
+        const mp3 = await api.getAudio(word);
+        const buffer = Buffer.from(await mp3.arrayBuffer());
+        res.setHeader('Content-Type', 'audio/mpeg');
+        res.send(buffer);
+    } catch (error) {
+        console.error('Error fetching audio:', error);
+        res.status(500).json({ error: 'Failed to fetch audio!!!' });
+    }
+});
+
 
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`);

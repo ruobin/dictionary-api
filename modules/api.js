@@ -31,6 +31,30 @@ const submitData = async (from, to, userInput) => {
 };
 
 
+const getAudio = async (word) => {
+    try {
+
+        const response = await fetch(process.env.OPENAI_TTS_API_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`
+            },
+            body: JSON.stringify({
+                model: "tts-1",
+                input: word,
+                voice: "alloy"
+            })
+        });
+
+        return response;
+    } catch (error) {
+        console.error('There was a problem with the fetch operation:', error);
+        throw error;
+    }
+};
+
 module.exports = {
-    submitData
+    submitData,
+    getAudio
 };
