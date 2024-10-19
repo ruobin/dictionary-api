@@ -26,7 +26,6 @@ const submitData = async (from, to, userInput) => {
         return data.choices[0].message.content;
     } catch (error) {
         console.error('There was a problem with the fetch operation:', error);
-        throw error;
     }
 };
 
@@ -51,11 +50,46 @@ const getAudio = async (word) => {
         return response;
     } catch (error) {
         console.error('There was a problem with the fetch operation:', error);
-        throw error;
+    }
+};
+
+const { GoogleAuth } = require('google-auth-library');
+const keyFile = 'google-key-file.json';
+const auth = new GoogleAuth({
+    keyFile,
+    scopes: 'https://www.googleapis.com/auth/cloud-platform',
+});
+
+
+const getGoogleCloudAudio = async (languageCode, text) => {
+    try {
+        const client = await auth.getClient();
+        const url = 'https://texttospeech.googleapis.com/v1/text:synthesize';
+        const response = await client.request({
+            url: url,
+            method: 'POST',
+            data: {
+                input: { ssml: `<speak>${text}</speak>` },
+                voice: {
+                    languageCode: languageCode,
+                    // name: 'en-US-Wavenet-D',
+                    // ssmlGender: 'NEUTRAL'
+                },
+                audioConfig: {
+                    audioEncoding: 'MP3'
+                }
+            }
+        });
+
+        const data = response.data;
+        return data.audioContent;
+    } catch (error) {
+        console.error('There was a problem with the fetch operation:', error);
     }
 };
 
 module.exports = {
     submitData,
-    getAudio
+    getAudio,
+    getGoogleCloudAudio
 };

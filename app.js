@@ -70,6 +70,13 @@ app.post('/api/getaudio', cors(), async (req, res) => {
     }
 });
 
+app.post('/api/getgoogleaudio', cors(), async (req, res) => {
+    const languageCode = req.body.languageCode;
+    const text = req.body.word;
+    const audio = await api.getGoogleCloudAudio(languageCode, text);
+    res.send(audio);
+});
+
 
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`);
