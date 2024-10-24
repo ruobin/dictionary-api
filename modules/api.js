@@ -9,9 +9,9 @@ const submitData = async (from, to, userInput) => {
                 'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`
             },
             body: JSON.stringify({
-                model: "gpt-3.5-turbo",
+                model: "gpt-4o-mini",
                 messages: [
-                    { role: "system", content: `you are an ${from} dictionary, when I input an ${from} word or expression, you tell me the pronunciation, ${to} translation, and meaning and sample sentences of this word.` },
+                    { role: "system", content: `you are an ${from} dictionary, when I input an ${from} word or expression, you tell me the pronunciation, ${to} translation, and meaning and sample sentences of this word. If this word has multiple forms, such as noun, verb, adjective, etc., you should tell me all the forms. If this word has multiple meanings, you should tell me all the meanings. If this word has multiple pronunciations, you should tell me all the pronunciations. For different meanings or forms, you should use an addtional empty line to separate them.` },
                     { role: "user", content: userInput }
                 ],
                 temperature: 0.7
