@@ -69,7 +69,45 @@ const submitDataGroq = async (from, to, userInput) => {
   }
 };
 
+const submitDataGemini = async (from, to, userInput) => {
+  try {
+    const response = await fetch(process.env.GEMINI_API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        // Authorization: `Bearer ${process.env.GEMINI_API_TOKEN}`,
+      },
+      body: JSON.stringify({
+        system_instruction: {
+          parts: {
+            text: `you are an ${from} dictionary, when I input an ${from} word or expression, you tell me the pronunciation, a short ${to} translation, and meaning and sample sentences of this word in ${from}. 
+            If this word has multiple forms, such as noun, verb, adjective, etc., you should tell me all the forms. If this word has multiple meanings, you should tell me all the meanings in ${from}. 
+            If this word has multiple pronunciations, you should tell me all the pronunciations. For different meanings or forms, you should use an additional empty line to separate them. 
+            For each section title, you should wrap it with two stars, like **Pronunciation**.`,
+          },
+        },
+        contents: {
+          parts: {
+            text: userInput,
+          },
+        },
+      }),
+    });
+
+    console.log(response);
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+    const data = await response.json();
+
+    return data.candidates[0].content.parts[0].text;
+  } catch (error) {
+    console.error("There was a problem with the fetch operation:", error);
+  }
+};
+
 module.exports = {
   submitData,
   submitDataGroq,
+  submitDataGemini,
 };

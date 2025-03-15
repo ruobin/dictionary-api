@@ -41,7 +41,7 @@ app.post('/api/translate', cors(), async (req, res) => {
     const word = req.body.word;
     const cachedResult = await Record.find({ word: word });
     if (cachedResult.length === 0) {
-        const response = await chat.submitDataGroq(from, to, word);
+        const response = await chat.submitDataGemini(from, to, word);
         res.json({ data: { word: word, translation: response } });
 
         const newRecordData = { word: word, translation: response };
