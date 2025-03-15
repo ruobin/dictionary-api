@@ -2,7 +2,8 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 
-const api = require('./modules/api');
+const chat = require('./modules/chat');
+const audioApi = require('./modules/audio');
 const app = express();
 app.use(express.json());
 
@@ -40,7 +41,7 @@ app.post('/api/translate', cors(), async (req, res) => {
     const word = req.body.word;
     const cachedResult = await Record.find({ word: word });
     if (cachedResult.length === 0) {
-        const response = await api.submitData(from, to, word);
+        const response = await chat.submitDataGroq(from, to, word);
         res.json({ data: { word: word, translation: response } });
 
         const newRecordData = { word: word, translation: response };
@@ -60,7 +61,7 @@ app.post('/api/getaudio', cors(), async (req, res) => {
     }
 
     try {
-        const mp3 = await api.getAudio(word);
+        const mp3 = await audioApi.getAudioOpenAI(word);
         const buffer = Buffer.from(await mp3.arrayBuffer());
         res.setHeader('Content-Type', 'audio/mpeg');
         res.send(buffer);
@@ -73,7 +74,7 @@ app.post('/api/getaudio', cors(), async (req, res) => {
 app.post('/api/getgoogleaudio', cors(), async (req, res) => {
     const languageCode = req.body.languageCode;
     const text = req.body.word;
-    const audio = await api.getGoogleCloudAudio(languageCode, text);
+    const audio = await audioApi.getAudioGoogleCloud(languageCode, text);
     res.send(audio);
 });
 
