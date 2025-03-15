@@ -39,7 +39,7 @@ const submitDataGroq = async (from, to, userInput) => {
         Authorization: `Bearer ${process.env.GROQ_API_TOKEN}`,
       },
       body: JSON.stringify({
-        model: "gemma2-9b-it",
+        model: "qwen-2.5-32b",
         temperature: 1,
         max_completion_tokens: 1024,
         top_p: 1,
